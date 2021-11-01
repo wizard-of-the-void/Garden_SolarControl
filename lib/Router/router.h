@@ -10,12 +10,13 @@
 
 class signalRouter {
     private:
-        timerInterface theTimerInterface;
-        relaisInterface theRelaisInterface;
+        timerInterface *theTimerInterface;
+        relaisInterface *theRelaisInterface;
 
         uint8_t myInputs;
         uint8_t myOutputs;
 
+        volatile FIFO<triggerSignal, 64> myBuffer;
         uint8_t myMatrix[];
 
     public:
@@ -28,7 +29,8 @@ class signalRouter {
         bool enableMenue(void);
         bool disableMenue(void);
 
-        bool routeSignal(triggerSignal aSignal);
+        bool issueSignal(triggerSignal aSignal);
+        bool runRouter(void);
 };
 
 #endif
