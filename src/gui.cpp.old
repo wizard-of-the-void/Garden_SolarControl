@@ -1,0 +1,93 @@
+#include<menue.h>
+
+void* testPtr;
+
+namespace myScreens {
+    mainScreen myMainScreen;
+    selectionScreen mySelectionScreens[5] = {
+        selectionScreen("Zschltg aendern?"), 
+        selectionScreen("Matrix  aendern?"), 
+        selectionScreen("Uhrzeit aendern?"),
+        selectionScreen("Datum   aendern?"),
+        selectionScreen("Kontrst aendern?")
+        };
+/*
+    durationScreen myDurationScreens[5] = {
+        durationScreen("Max-Ein: ### Min", ),
+        durationScreen("Bw1-Ein: ### Min", ),
+        durationScreen("Bw2-Ein: ### Min", ),
+        durationScreen("Ts1-Ein: ### Min", ),
+        durationScreen("Ts2-Ein: ### Min", )
+    };
+
+    timeScreen myTimeScreens[9] = {
+        timeScreen("Bw1-Str-Z: ##:##", ),
+        timeScreen("Bw1-End-Z: ##:##", ),
+        timeScreen("Bw2-Str-Z: ##:##", ),
+        timeScreen("Bw2-End-Z: ##:##", ),
+        timeScreen("Z1-Str-Z:  ##:##", ),
+        timeScreen("Z1-End-Z:  ##:##", ),
+        timeScreen("Z2-Str-Z:  ##:##", ),
+        timeScreen("Z2-End-Z:  ##:##", ),
+        timeScreen("Zeit:      00:00", )
+    };
+
+    stateScreen myStateScreens[2] =  {
+        stateScreen("Z1-Status:   EIN", ),
+        stateScreen("Z2-Status:   EIN", )
+    };
+
+    multiStateScreen myMultiStateScreens[8] = {
+        multiStateScreen("Z1-WTage:1234567" , ),
+        multiStateScreen("Z2-WTage:1234567" , ),
+        multiStateScreen("Bw1 => A:1 2 3 4" , ),
+        multiStateScreen("Bw2 => A:1 2 3 4" , ),
+        multiStateScreen("Ts1 => A:1 2 3 4" , ),
+        multiStateScreen("Ts2 => A:1 2 3 4" , ),
+        multiStateScreen("Z1  => A:1 2 3 4" , ),
+        multiStateScreen("Z2  => A:1 2 3 4" , )
+    };
+
+    dateScreen myDateScreen = dateScreen("Datum DD.MM.YYYY", );
+    barScreen myContrastScreen = barScreen("0------|-------9", );
+*/
+/*
+        "Max-Ein: ### Min"  => DurationScreen 2
+        "Bw1-Ein: ### Min"  => DurationScreen 2
+        "Bw2-Ein: ### Min"  => DurationScreen 2
+
+        "Bw1-Str-Z: ##:##"  => TimeScreen 2
+        "Bw1-End-Z: ##:##"  => TimeScreen 2
+        
+        "Bw2-Str-Z: ##:##"  => TimeScreen 2
+        "Bw2-End-Z: ##:##"  => TimeScreen 2
+
+        "Ts1-Ein: ### Min"  => DurationScreen 2
+        "Ts2-Ein: ### Min"  => DurationScreen 2
+
+        "Z1-Status:   EIN"  => StateScreen 2
+        "Z1-Str-Z:  ##:##"  => TimeScreen 2
+        "Z1-End-Z:  ##:##"  => TimeScreen 2
+        "Z1-WTage:1234567"  => DayScreen 2
+        
+        "Z2-Status:   EIN"  => StateScreen 2
+        "Z2-Str-Z:  ##:##"  => TimeScreen 2
+        "Z2-End-Z:  ##:##"  => TimeScreen 2
+        "Z2-WTage:1234567"  => DayScreen 2
+
+        "Bw1 => A:1 2 3 4"  => MatrixScreen 2
+        "Bw2 => A:1 2 3 4"  => MatrixScreen 2
+        "Ts1 => A:1 2 3 4"  => MatrixScreen 2
+        "Ts2 => A:1 2 3 4"  => MatrixScreen 2
+        "Z1  => A:1 2 3 4"  => MatrixScreen 2
+        "Z2  => A:1 2 3 4"  => MatrixScreen 2
+
+        "Zeit:      00:00"  => TimeScreen 2
+
+        "Datum DD.MM.YYYY"  => DateScreen 2
+        
+        "0------|-------9"  => BarScreen 2
+        */    
+}
+
+menue myMenue = menue(&myScreens::myMainScreen);

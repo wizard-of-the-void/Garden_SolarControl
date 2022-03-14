@@ -23,6 +23,11 @@ const DateTime triggerSignal::get_expiration() {
 }
 
 
-signalInterface::signalInterface() {
-    
+signalInterface::signalInterface(signalRouter *aRouter) {
+    theRouter = aRouter;
+}
+
+void signalInterface::checkInputs() {
+    uint8_t lastPin = myMcp.getLastInterruptPin();
+    theRouter->issueSignal(triggerSignal(lastPin, myDelays[lastPin], ));
 }

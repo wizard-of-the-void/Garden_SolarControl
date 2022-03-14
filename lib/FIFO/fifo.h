@@ -35,16 +35,16 @@
 template <class T=uint8_t, uint8_t N=32>
 class FIFO {
   private:
-    int head;
-    int tail;
-    int numElements;
-    T buffer[N];
+    volatile int head;
+    volatile int tail;
+    volatile int numElements;
+    volatile T buffer[N];
   public:
     FIFO();
     ~FIFO();
-    void push(T data);
-    T pop();
-    int size();
+    void push(T data) volatile;
+    T pop() volatile;
+    int size() volatile;
 };
 
 template <class T, uint8_t N>
@@ -59,7 +59,7 @@ FIFO<T,N>::~FIFO() {
 }
 
 template <class T, uint8_t N>
-void FIFO<T,N>::push(T data) {
+void FIFO<T,N>::push(T data) volatile {
   if(numElements == N) {
 //    Serial.println(F("Buffer full"));
     return;
@@ -83,7 +83,7 @@ void FIFO<T,N>::push(T data) {
 }
 
 template <class T, uint8_t N>
-T FIFO<T,N>::pop() {
+T FIFO<T,N>::pop() volatile {
   if(numElements == 0) {
 //    Serial.println(F("Buffer empty"));
     return NULL;
@@ -107,7 +107,7 @@ T FIFO<T,N>::pop() {
 }
 
 template <class T, uint8_t N>
-int FIFO<T,N>::size() {
+int FIFO<T,N>::size() volatile {
   return numElements;
 }
 

@@ -2,58 +2,84 @@
 #include <Arduino.h>
 #include <RTClib.h>
 #include <Adafruit_MCP23X17.h>
-#include <LiquidCrystal.h>
 
 #include "constants.h"
 #include "isr.h"
 #include "relais.h"
+#include "menue.h"
 
 RTC_DS3231 rtc;
 Adafruit_MCP23X17 mcp;
-LiquidCrystal lcd(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7);
 uint8_t ioMatrix[2];
 //volatile signal_names signal;
-relaisInterface relais;
-bool menu;
- /*
-void routeSignal(signal_names aSignal) {
-  bool myState;
-  myState = ioMatrix[0] & (1 << aSignal);
-  if (myState) {
-    relais.protectedToggle(0);
-  }
-  myState = ioMatrix[0] & (1 << (aSignal + 4));
-  if (myState) {
-    relais.protectedToggle(1);
-  }  
-  myState = ioMatrix[1] & (1 << aSignal);
-  if (myState) {
-    relais.protectedToggle(2);
-  }  
-  myState = ioMatrix[1] & (1 << (aSignal + 4));
-  if (myState) {
-    relais.protectedToggle(3);
-  }  
-} */
+relaisInterface relais(constants::relay_count, constants::relay_out);
+//menue myMenue;
+enum class inputSignal:uint8_t {nop, timerA, timerB, sensorA, sensorB, switchA, switchB, switchC, switchD, doorSwitch, keyA, keyB, keyC, keyD};
+inputSignal signalBuffer[constants::signalBufferSize];
+uint8_t recordIndex = 0, readIndex = 0;
 
-void displayOn(void) {
-  //Background on
-  analogWrite(lcd_backlight, lcd_brightness);
-  //Power up
-  lcd.display();
+LiquidCrystal myLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en, constants::lcd_d4, constants::lcd_d5, constants::lcd_d6, constants::lcd_d7);
+LiquidCrystal* screen::myLcd = myLcd;
+testObj myTest;
+namespace myScreens {
+    mainScreen myMainScreen;
+    selectionScreen mySelectionScreens[5] = {
+        selectionScreen("Zschltg aendern?"), 
+        selectionScreen("Matrix  aendern?"), 
+        selectionScreen("Uhrzeit aendern?"),
+        selectionScreen("Datum   aendern?"),
+        selectionScreen("Kontrst aendern?")
+        };
+    durationScreen myDurationScreens[5] = {
+        durationScreen("Max-Ein: ### Min", &myTest ),
+        durationScreen("Bw1-Ein: ### Min", &myTest ),
+        durationScreen("Bw2-Ein: ### Min", &myTest ),
+        durationScreen("Ts1-Ein: ### Min", &myTest ),
+        durationScreen("Ts2-Ein: ### Min", &myTest )
+    };
+
+    timeScreen myTimeScreens[9] = {
+        timeScreen("Bw1-Str-Z: ##:##", &myTest),
+        timeScreen("Bw1-End-Z: ##:##", &myTest ),
+        timeScreen("Bw2-Str-Z: ##:##", &myTest ),
+        timeScreen("Bw2-End-Z: ##:##", &myTest ),
+        timeScreen("Z1-Str-Z:  ##:##", &myTest ),
+        timeScreen("Z1-End-Z:  ##:##", &myTest ),
+        timeScreen("Z2-Str-Z:  ##:##", &myTest ),
+        timeScreen("Z2-End-Z:  ##:##", &myTest ),
+        timeScreen("Zeit:      00:00", &myTest )
+    };
+
+    stateScreen myStateScreens[2] =  {
+        stateScreen("Z1-Status:   EIN", &myTest ),
+        stateScreen("Z2-Status:   EIN", &myTest )
+    };
+
+    multiStateScreen myMultiStateScreens[8] = {
+        multiStateScreen("Z1-WTage:1234567" , &myTest ),
+        multiStateScreen("Z2-WTage:1234567" , &myTest ),
+        multiStateScreen("Bw1 => A:1 2 3 4" , &myTest ),
+        multiStateScreen("Bw2 => A:1 2 3 4" , &myTest ),
+        multiStateScreen("Ts1 => A:1 2 3 4" , &myTest ),
+        multiStateScreen("Ts2 => A:1 2 3 4" , &myTest ),
+        multiStateScreen("Z1  => A:1 2 3 4" , &myTest ),
+        multiStateScreen("Z2  => A:1 2 3 4" , &myTest )
+    };
+
+    dateScreen myDateScreen = dateScreen("Datum DD.MM.YYYY", &myTest );
+    barScreen myContrastScreen = barScreen("0------|-------9", &myTest );        
 }
 
-void displayOff(void) {
-  //Background off
-  analogWrite(lcd_backlight, 0);
-  //Power down  
-  lcd.noDisplay();
-}
+menue myMenue = menue(&myScreens::myMainScreen);
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
 
+  // clear the buffer to make sure we have a know state
+  for (uint8_t i = 0; i < constants::signalBufferSize; i++ ){
+    signalBuffer[i] = inputSignal::nop;
+  }
   // initializing the rtc
   if(!rtc.begin()) {
       Serial.println("Couldn't find RTC!");
@@ -70,8 +96,8 @@ void setup() {
   rtc.disable32K();
   
   // Making it so, that the alarm will trigger an interrupt
-  pinMode(irq_A, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(irq_A), onTimer, FALLING);
+  pinMode(constants::irq_A, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(constants::irq_A), onTimer, FALLING);
   
   // set alarm 1, 2 flag to false (so alarm 1, 2 didn't happen so far)
   // if not done, this easily leads to problems, as both register aren't reset on reboot/recompile

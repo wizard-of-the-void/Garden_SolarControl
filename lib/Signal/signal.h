@@ -1,9 +1,9 @@
 #ifndef _SIGNAL_H_
 #define _SIGNAL_H_
 
-#include <RTClib.h>
+#include <timerInterface.h>
 #include <Adafruit_MCP23X17.h>
-#include <fifo.h>
+#include <router.h>
 #include "constants.h"
 
 class triggerSignal {
@@ -23,13 +23,13 @@ class triggerSignal {
 class signalInterface {
     private:
         Adafruit_MCP23X17 myMcp;
-        FIFO myFifo;
+        timerInterface *theTimerInterface;
+        signalRouter *theRouter;
         uint8_t myDelays[8];
     public:
-        signalInterface();
+        signalInterface(signalRouter *aRouter);
         void checkInputs(void);
-        triggerSignal generateSignal(void);
-        bool signalsAvialable(void);
+        bool setDelay(uint8_t aInput);
 };
 
 #endif

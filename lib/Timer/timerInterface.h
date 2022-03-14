@@ -21,7 +21,7 @@ class timerInterface {
         uint8_t* findNextInterval();
 
     public:
-        timerInterface(relaisInterface* aRelaisInterface, signalRouter* aSignalRouter);
+        timerInterface(signalRouter* aSignalRouter);
 
         bool setDelay(uint8_t aOutput);
         uint8_t getDelay(uint8_t aOutput);

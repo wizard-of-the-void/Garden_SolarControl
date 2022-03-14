@@ -1,9 +1,9 @@
 #include "relais.h"
-#include "constants.h"
 #include <Arduino.h>
 
-relaisInterface::relaisInterface(uint8_t aCount) {
+relaisInterface::relaisInterface(uint8_t aCount, const uint8_t *someOuts) {
     myCount = aCount;
+    myOuts = someOuts;
     outStates = 0x00;
 }
 
@@ -33,5 +33,5 @@ bool relaisInterface::setState(uint8_t aOutput, bool aState) {
 
 void relaisInterface::setOutput(uint8_t aOutput) {
     bool myState = outStates & (1 << aOutput);
-    digitalWrite(relay_out[aOutput], !myState);
+    digitalWrite(myOuts[aOutput], !myState);
 }
