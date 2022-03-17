@@ -48,8 +48,8 @@ class testObj : public durationObj, public timeObj, public multiStateObj, public
 
 class screen {
     private:    
-        char    myFirstLine[constants::lcd_conf_cols+1],
-                mySecondLine[constants::lcd_conf_cols+1];
+        const char    *myFirstLine,
+                *mySecondLine;
         screen  *myParentScreen, *myPervScreen, *myNextScreen, *myChildScreen;
         static LiquidCrystal* myLcd; 
     public:
@@ -89,7 +89,7 @@ class mainScreen : public screen {
 
 class selectionScreen : public screen{
     private:
-        static constexpr const char* secondLine = "W  Z  #  E  => M";
+        static constexpr const char* secondLine = constants::lcdContent::str[constants::lcdContent::sndLine1];
     public:
         selectionScreen(const char* firstLine);
         screen* receiveSignal(uint8_t aSignal);
@@ -98,7 +98,7 @@ class selectionScreen : public screen{
 class durationScreen : public screen {
     private:
         durationObj* myDurationTarget;
-        static constexpr const char* secondLine = "W  Z  +  -  => M";        
+        static constexpr const char* secondLine = constants::lcdContent::str[constants::lcdContent::sndLine3];        
     public:
         durationScreen(const char* firstLine, durationObj* aDurationObj);
         screen* receiveSignal(uint8_t aSignal);
@@ -108,7 +108,7 @@ class durationScreen : public screen {
 class stateScreen : public screen {
     private:
         multiStateObj* myStateTarget;
-        static constexpr const char* secondLine = "#  #  +  -  => M";        
+        static constexpr const char* secondLine = constants::lcdContent::str[constants::lcdContent::sndLine4];        
     public:
         stateScreen(const char* firstLine, multiStateObj* aMultiStateObj);
         screen* receiveSignal(uint8_t aSignal);
@@ -117,7 +117,7 @@ class stateScreen : public screen {
 class multiStateScreen : public screen {
     private:
         multiStateObj* myMultiStateTarget;
-        static constexpr const char* secondLine = "W  Z  +  -  => M";        
+        static constexpr const char* secondLine = constants::lcdContent::str[constants::lcdContent::sndLine3];        
     public:
         multiStateScreen(const char* firstLine, multiStateObj* aMultiStateObj);
         screen* receiveSignal(uint8_t aSignal);
@@ -126,7 +126,7 @@ class multiStateScreen : public screen {
 class dateScreen : public screen {
     private:
         timeObj* myDateTarget;
-        static constexpr const char* secondLine = "W  Z  +  -  => M";        
+        static constexpr const char* secondLine = constants::lcdContent::str[constants::lcdContent::sndLine3];        
     public:
         dateScreen(const char* firstLine, timeObj* aTimeObj);
         screen* receiveSignal(uint8_t aSignal);
@@ -135,7 +135,7 @@ class dateScreen : public screen {
 class timeScreen : public screen {
     private:
         timeObj* myTimeTarget;
-        static constexpr const char* secondLine = "W  Z  +  -  => M";        
+        static constexpr const char* secondLine = constants::lcdContent::str[constants::lcdContent::sndLine3];        
     public:
         timeScreen(const char* firstLine, timeObj* aTimeObj);
         screen* receiveSignal(uint8_t aSignal);
@@ -144,7 +144,7 @@ class timeScreen : public screen {
 class barScreen : public screen{
     private:
         valueObj* myValueObj;
-        static constexpr const char* secondLine = "#  #  +  -  => M";        
+        static constexpr const char* secondLine = constants::lcdContent::str[constants::lcdContent::sndLine4];        
     public:
         barScreen(const char* firstLine, valueObj* aValueObj);
         screen* receiveSignal(uint8_t aSignal);

@@ -24,50 +24,50 @@ testObj myTest;
 namespace myScreens {
     mainScreen myMainScreen;
     selectionScreen mySelectionScreens[5] = {
-        selectionScreen("Zschltg aendern?"), 
-        selectionScreen("Matrix  aendern?"), 
-        selectionScreen("Uhrzeit aendern?"),
-        selectionScreen("Datum   aendern?"),
-        selectionScreen("Kontrst aendern?")
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeSelection]), 
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::matrixSelection]), 
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeSelection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::dateSelection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::contrastSelection])
         };
     durationScreen myDurationScreens[5] = {
-        durationScreen("Max-Ein: ### Min", &myTest ),
-        durationScreen("Bw1-Ein: ### Min", &myTest ),
-        durationScreen("Bw2-Ein: ### Min", &myTest ),
-        durationScreen("Ts1-Ein: ### Min", &myTest ),
-        durationScreen("Ts2-Ein: ### Min", &myTest )
+        durationScreen(constants::lcdContent::str[constants::lcdContent::durationsMax], &myTest ),
+        durationScreen(constants::lcdContent::str[constants::lcdContent::durationsBw1], &myTest ),
+        durationScreen(constants::lcdContent::str[constants::lcdContent::durationsBw2], &myTest ),
+        durationScreen(constants::lcdContent::str[constants::lcdContent::durationTs1], &myTest ),
+        durationScreen(constants::lcdContent::str[constants::lcdContent::durationTs2], &myTest )
     };
 
     timeScreen myTimeScreens[9] = {
-        timeScreen("Bw1-Str-Z: ##:##", &myTest),
-        timeScreen("Bw1-End-Z: ##:##", &myTest ),
-        timeScreen("Bw2-Str-Z: ##:##", &myTest ),
-        timeScreen("Bw2-End-Z: ##:##", &myTest ),
-        timeScreen("Z1-Str-Z:  ##:##", &myTest ),
-        timeScreen("Z1-End-Z:  ##:##", &myTest ),
-        timeScreen("Z2-Str-Z:  ##:##", &myTest ),
-        timeScreen("Z2-End-Z:  ##:##", &myTest ),
-        timeScreen("Zeit:      00:00", &myTest )
+        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw1StrTime], &myTest),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw1EndTime], &myTest),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw2StrTime], &myTest ),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw2EndTime], &myTest ),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::z1StrTime], &myTest ),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::z1EndTime], &myTest ),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::z2StrTime], &myTest ),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::z2EndTime], &myTest ),
+        timeScreen(constants::lcdContent::str[constants::lcdContent::timeAdjust], &myTest )
     };
 
     stateScreen myStateScreens[2] =  {
-        stateScreen("Z1-Status:   EIN", &myTest ),
-        stateScreen("Z2-Status:   EIN", &myTest )
+        stateScreen(constants::lcdContent::str[constants::lcdContent::z1State], &myTest ),
+        stateScreen(constants::lcdContent::str[constants::lcdContent::z2State], &myTest )
     };
 
     multiStateScreen myMultiStateScreens[8] = {
-        multiStateScreen("Z1-WTage:1234567" , &myTest ),
-        multiStateScreen("Z2-WTage:1234567" , &myTest ),
-        multiStateScreen("Bw1 => A:1 2 3 4" , &myTest ),
-        multiStateScreen("Bw2 => A:1 2 3 4" , &myTest ),
-        multiStateScreen("Ts1 => A:1 2 3 4" , &myTest ),
-        multiStateScreen("Ts2 => A:1 2 3 4" , &myTest ),
-        multiStateScreen("Z1  => A:1 2 3 4" , &myTest ),
-        multiStateScreen("Z2  => A:1 2 3 4" , &myTest )
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1WkDays] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2WkDays] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw1Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw2Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts1Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts2Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2Matrix] , &myTest )
     };
 
-    dateScreen myDateScreen = dateScreen("Datum DD.MM.YYYY", &myTest );
-    barScreen myContrastScreen = barScreen("0------|-------9", &myTest );        
+    dateScreen myDateScreen = dateScreen(constants::lcdContent::str[constants::lcdContent::dateAdjust], &myTest );
+    barScreen myContrastScreen = barScreen(constants::lcdContent::str[constants::lcdContent::contrastAdjust], &myTest );        
 }
 
 menue myMenue = menue(&myScreens::myMainScreen);

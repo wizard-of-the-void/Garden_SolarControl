@@ -26,17 +26,13 @@ void menue::reactToSignal(uint8_t aSignal) {
 
 screen::screen(LiquidCrystal *aLcd, const char* aFirstLine, const char* aSecondLine) {
     myLcd = aLcd;
-    strncpy(myFirstLine, aFirstLine, constants::lcd_conf_cols);
-    myFirstLine[constants::lcd_conf_cols] = '\0';
-    strncpy(mySecondLine, aSecondLine, constants::lcd_conf_cols);
-    mySecondLine[constants::lcd_conf_cols] = '\0';
+    myFirstLine = aFirstLine;
+    mySecondLine = aSecondLine;
 }
 
 screen::screen(const char* aFirstLine, const char* aSecondLine) {
-    strncpy(myFirstLine, aFirstLine, constants::lcd_conf_cols);
-    myFirstLine[constants::lcd_conf_cols] = '\0';
-    strncpy(mySecondLine, aSecondLine, constants::lcd_conf_cols);
-    mySecondLine[constants::lcd_conf_cols] = '\0';
+    myFirstLine = aFirstLine;
+    mySecondLine = aSecondLine;
 }
 
 void screen::setLinks(screen *parentScreen, screen *pervScreen, screen *nextScreen, screen *childScreen) {
