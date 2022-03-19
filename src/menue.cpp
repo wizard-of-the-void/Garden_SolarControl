@@ -82,9 +82,14 @@ screen* screen::getScreen(screenRelation aRelation) {
 void screen::initText(bool showCursor) {
     this->myLcd->clear();
     this->myLcd->setCursor(0,0);
-    this->myLcd->print(this->myFirstLine);
+
+    char buffer[17];
+    strcpy_P(buffer, (char *)pgm_read_word(&(myFirstLine)));
+    this->myLcd->print(buffer);
     this->myLcd->setCursor(1,0);
-    this->myLcd->print(this->mySecondLine);
+
+    strcpy_P(buffer, (char *)pgm_read_word(&(mySecondLine)));
+    this->myLcd->print(buffer);
     if (showCursor) {
         this->myLcd->cursor();
     } else {
@@ -111,7 +116,8 @@ void screen::activate(void) {
 }
 
 
-mainScreen::mainScreen():screen("                ", "                "){
+mainScreen::mainScreen():screen(constants::lcdContent::str[constants::lcdContent::Empty], 
+                                constants::lcdContent::str[constants::lcdContent::Empty]){
     
 } 
 
@@ -119,7 +125,7 @@ screen* mainScreen::receiveSignal(uint8_t aSignal) {
     return this;
 }
 
-selectionScreen::selectionScreen(const char* firstLine) : screen(firstLine, secondLine) //, firstLine, selectionScreen::secondLine) {
+selectionScreen::selectionScreen(const char* firstLine) : screen(firstLine, constants::lcdContent::str[constants::lcdContent::sndLine1]) //, firstLine, selectionScreen::secondLine) {
     {
 }
 
@@ -127,32 +133,32 @@ screen* selectionScreen::receiveSignal(uint8_t aSignal) {
     return this;
 }
 
-durationScreen::durationScreen(const char* firstLine, durationObj* aDurationObj) : screen(firstLine, secondLine) {}
+durationScreen::durationScreen(const char* firstLine, durationObj* aDurationObj) : screen(firstLine, constants::lcdContent::str[constants::lcdContent::sndLine3]) {}
 screen* durationScreen::receiveSignal(uint8_t aSignal) {
     return this;
 }
 
-timeScreen::timeScreen(const char* firstLine, timeObj* aTimeObj) : screen(firstLine, secondLine) {}
+timeScreen::timeScreen(const char* firstLine, timeObj* aTimeObj) : screen(firstLine, constants::lcdContent::str[constants::lcdContent::sndLine3]) {}
 screen* timeScreen::receiveSignal(uint8_t aSignal) {
     return this;
 }
 
-stateScreen::stateScreen(const char* firstLine, multiStateObj* aStateObj) : screen(firstLine, secondLine) {}
+stateScreen::stateScreen(const char* firstLine, multiStateObj* aStateObj) : screen(firstLine, constants::lcdContent::str[constants::lcdContent::sndLine4]) {}
 screen* stateScreen::receiveSignal(uint8_t aSignal) {
     return this;
 }
 
-multiStateScreen::multiStateScreen(const char* firstLine, multiStateObj* aMultiStateObj) : screen(firstLine, secondLine) {}
+multiStateScreen::multiStateScreen(const char* firstLine, multiStateObj* aMultiStateObj) : screen(firstLine, constants::lcdContent::str[constants::lcdContent::sndLine2]) {}
 screen* multiStateScreen::receiveSignal(uint8_t aSignal) {
     return this;
 }
 
-dateScreen::dateScreen(const char* firstLine, timeObj* aTimeObj) : screen(firstLine, secondLine) {}
+dateScreen::dateScreen(const char* firstLine, timeObj* aTimeObj) : screen(firstLine, constants::lcdContent::str[constants::lcdContent::sndLine3]) {}
 screen* dateScreen::receiveSignal(uint8_t aSignal){
     return this;
 }
 
-barScreen::barScreen(const char* firstLine, valueObj* aValueObj) : screen(firstLine, secondLine) {}
+barScreen::barScreen(const char* firstLine, valueObj* aValueObj) : screen(firstLine, constants::lcdContent::str[constants::lcdContent::sndLine4]) {}
 screen* barScreen::receiveSignal(uint8_t aSignal) {
     return this;
 }
