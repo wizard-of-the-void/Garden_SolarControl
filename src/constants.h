@@ -96,27 +96,42 @@ enum signalSource {PIR01 = 0, PIR02 = 1, KEY01 = 2, KEY02 = 3, C_BTN, BTN01, BTN
             sndLine2 = 33,
             sndLine3 = 34,
             sndLine4 = 35,
-            sndLine5 = 36};
+            sndLine5 = 36,
+            
+            timeManSelection = 37,
+            timeBw1Selection = 38,
+            timeBw2Selection = 39,
+            timeZ1Selection  = 40,
+            timeZ2Selection  = 41,
+            timeT1Selection  = 42,
+            timeT2Selection  = 43 };
 //       0123456789ABCDEF 
 const char PROGMEM  str_01[] = { "                " }, //=> MainScreen
                     str_02[] = { "Zschltg aendern?" }, //=> SeclectionScreen 2
+                    str_02_01[] = { "Manuel   ändern?" },
+                    str_02_02[] = { "Melder-1 ändern?" },
+                    str_02_03[] = { "Melder-2 ändern?" },
+                    str_02_04[] = { "Zeit-1   ändern?" },
+                    str_02_05[] = { "Zeit-2   ändern?" },
+                    str_02_06[] = { "Taster-1 ändern?" },
+                    str_02_07[] = { "Taster-2 ändern?" },                                        
                     str_03[] = { "Matrix  aendern?" }, //=> SeclectionScreen 2
                     str_04[] = { "Uhrzeit aendern?" }, //=> SeclectionScreen 2
                     str_05[] = { "Datum   aendern?" }, //=> SeclectionScreen 2
                     str_06[] = { "Kontrst aendern?" }, //=> SeclectionScreen 2
 
-                    str_07[] = { "Max-Ein: ### Min" }, //=> DurationScreen 2
+                    str_07[] = { "Man-Ein: ### Min" }, //=> DurationScreen 2
                     str_08[] = { "Bw1-Ein: ### Min" }, //=> DurationScreen 2
                     str_09[] = { "Bw2-Ein: ### Min" }, //=> DurationScreen 2
 
-                    str_10[] = { "Bw1-Str-Z: ##:##" }, //=> TimeScreen 2
-                    str_11[] = { "Bw1-End-Z: ##:##" }, //=> TimeScreen 2
+                    str_10[] = { "M-1-Str-Z: ##:##" }, //=> TimeScreen 2
+                    str_11[] = { "M-1-End-Z: ##:##" }, //=> TimeScreen 2
                             
-                    str_12[] = { "Bw2-Str-Z: ##:##" }, //=> TimeScreen 2
-                    str_13[] = { "Bw2-End-Z: ##:##" }, //=> TimeScreen 2
+                    str_12[] = { "M-2-Str-Z: ##:##" }, //=> TimeScreen 2
+                    str_13[] = { "M-2-End-Z: ##:##" }, //=> TimeScreen 2
 
-                    str_14[] = { "Ts1-Ein: ### Min" }, //=> DurationScreen 2
-                    str_15[] = { "Ts2-Ein: ### Min" }, //=> DurationScreen 2
+                    str_14[] = { "T-1-Ein: ### Min" }, //=> DurationScreen 2
+                    str_15[] = { "T-2-Ein: ### Min" }, //=> DurationScreen 2
 
                     str_16[] = { "Z1-Status:   EIN" }, //=> StateScreen 2
                     str_17[] = { "Z1-Str-Z:  ##:##" }, //=> TimeScreen 2
@@ -128,12 +143,12 @@ const char PROGMEM  str_01[] = { "                " }, //=> MainScreen
                     str_22[] = { "Z2-End-Z:  ##:##" }, //=> TimeScreen 2
                     str_23[] = { "Z2-WTage:1234567" }, //=> DayScreen 2
 
-                    str_24[] = { "Bw1 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_25[] = { "Bw2 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_26[] = { "Ts1 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_27[] = { "Ts2 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_28[] = { "Z1  => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_29[] = { "Z2  => A:1 2 3 4" }, //=> MatrixScreen 2
+                    str_24[] = { "M-1 => A:1 2 3 4" }, //=> MatrixScreen 2
+                    str_25[] = { "M-2 => A:1 2 3 4" }, //=> MatrixScreen 2
+                    str_26[] = { "T-1 => A:1 2 3 4" }, //=> MatrixScreen 2
+                    str_27[] = { "T-2 => A:1 2 3 4" }, //=> MatrixScreen 2
+                    str_28[] = { "Z-1 => A:1 2 3 4" }, //=> MatrixScreen 2
+                    str_29[] = { "Z-2 => A:1 2 3 4" }, //=> MatrixScreen 2
 
                     str_30[] = { "Zeit:      00:00" }, //=> TimeScreen 2
 
@@ -149,7 +164,8 @@ const char PROGMEM  str_01[] = { "                " }, //=> MainScreen
 
     const char *const str[] PROGMEM = { str_01, str_02, str_03, str_04, str_05, str_06, str_07, str_08, str_09, str_10,
                                         str_21, str_22, str_23, str_24, str_25, str_26, str_27, str_28, str_29, str_30,
-                                        str_31, str_32, str_33, str_34, str_35, str_36, str_37 };
+                                        str_31, str_32, str_33, str_34, str_35, str_36, str_37, 
+                                        str_02_01, str_02_02, str_02_03, str_02_04, str_02_05, str_02_06, str_02_07 };
     }
 }
 /*

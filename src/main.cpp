@@ -23,12 +23,19 @@ LiquidCrystal* screen::myLcd = myLcd;
 testObj myTest;
 namespace myScreens {
     mainScreen myMainScreen;
-    selectionScreen mySelectionScreens[5] = {
+    selectionScreen mySelectionScreens[12] = {
         selectionScreen(constants::lcdContent::str[constants::lcdContent::timeSelection]), 
         selectionScreen(constants::lcdContent::str[constants::lcdContent::matrixSelection]), 
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeSelection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::clockSelection]),
         selectionScreen(constants::lcdContent::str[constants::lcdContent::dateSelection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::contrastSelection])
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::contrastSelection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeManSelection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeBw1Selection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeBw2Selection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeZ1Selection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeZ2Selection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeT1Selection]),
+        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeT2Selection])
         };
     durationScreen myDurationScreens[5] = {
         durationScreen(constants::lcdContent::str[constants::lcdContent::durationsMax], &myTest ),
@@ -55,7 +62,7 @@ namespace myScreens {
         stateScreen(constants::lcdContent::str[constants::lcdContent::z2State], &myTest )
     };
 
-    multiStateScreen myMultiStateScreens[8] = {
+    multiStateScreen myMultiStateScreens[14] = {
         multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1WkDays] , &myTest ),
         multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2WkDays] , &myTest ),
         multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw1Matrix] , &myTest ),
@@ -63,11 +70,52 @@ namespace myScreens {
         multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts1Matrix] , &myTest ),
         multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts2Matrix] , &myTest ),
         multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2Matrix] , &myTest )
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw1Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw2Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts1Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts2Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1Matrix] , &myTest ),
+        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2Matrix] , &myTest )        
     };
 
     dateScreen myDateScreen = dateScreen(constants::lcdContent::str[constants::lcdContent::dateAdjust], &myTest );
-    barScreen myContrastScreen = barScreen(constants::lcdContent::str[constants::lcdContent::contrastAdjust], &myTest );        
+    barScreen myContrastScreen = barScreen(constants::lcdContent::str[constants::lcdContent::contrastAdjust], &myTest );    
+
+    //Linking the Screens:
+}
+
+void setLinks(void) {
+  using namespace myScreens;
+  myMainScreen.setLinks(nullptr, nullptr,nullptr, &mySelectionScreens[0]);
+  //Main selectionMenu
+  mySelectionScreens[0].setLinks(&myMainScreen, &mySelectionScreens[4], &mySelectionScreens[1], &mySelectionScreens[5]);
+  mySelectionScreens[1].setLinks(&myMainScreen, &mySelectionScreens[0], &mySelectionScreens[2], &myMultiStateScreens[2]);
+  mySelectionScreens[2].setLinks(&myMainScreen, &mySelectionScreens[1], &mySelectionScreens[3], &myTimeScreens[8]);
+  mySelectionScreens[3].setLinks(&myMainScreen, &mySelectionScreens[2], &mySelectionScreens[4], &myDateScreen);
+  mySelectionScreens[4].setLinks(&myMainScreen, &mySelectionScreens[3], &mySelectionScreens[0], &myContrastScreen);
+  //Duration subSelectionMenu
+  mySelectionScreens[5].setLinks(&mySelectionScreens[0], &mySelectionScreens[9], &mySelectionScreens[6], &myDurationScreens[0]);
+  mySelectionScreens[6].setLinks(&mySelectionScreens[0], &mySelectionScreens[5], &mySelectionScreens[7], &myTimeScreens[0]);
+  mySelectionScreens[7].setLinks(&mySelectionScreens[0], &mySelectionScreens[6], &mySelectionScreens[8], &myTimeScreens[2]);
+  mySelectionScreens[8].setLinks(&mySelectionScreens[0], &mySelectionScreens[7], &mySelectionScreens[9], &myStateScreens[0]);
+  mySelectionScreens[9].setLinks(&mySelectionScreens[0], &mySelectionScreens[8], &mySelectionScreens[5], &myStateScreens[1]);
+  //Man Durations
+  myDurationScreens[0].setLinks(&mySelectionScreens[5],&myDurationScreens[4],&myDurationScreens[3], nullptr);
+  myDurationScreens[3].setLinks(&mySelectionScreens[5],&myDurationScreens[0],&myDurationScreens[4], nullptr);
+  myDurationScreens[4].setLinks(&mySelectionScreens[5],&myDurationScreens[3],&myDurationScreens[0], nullptr);
+  //Bw1
+
+  //Bw2
+
+  //Z1
+
+  //Z2
+
+  //Ts1
+
+  //Ts2
+
 }
 
 menue myMenue = menue(&myScreens::myMainScreen);
