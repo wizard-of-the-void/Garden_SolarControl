@@ -7,120 +7,31 @@
 #include "isr.h"
 #include "relais.h"
 #include "menue.h"
+#include "storage.h"
 
-RTC_DS3231 rtc;
-Adafruit_MCP23X17 mcp;
-uint8_t ioMatrix[2];
-//volatile signal_names signal;
-relaisInterface relais(constants::relay_count, constants::relay_out);
-//menue myMenue;
-enum class inputSignal:uint8_t {nop, timerA, timerB, sensorA, sensorB, switchA, switchB, switchC, switchD, doorSwitch, keyA, keyB, keyC, keyD};
-inputSignal signalBuffer[constants::signalBufferSize];
-uint8_t recordIndex = 0, readIndex = 0;
+// setup external components
+RTC_DS3231 theRtc;
+Adafruit_MCP23X17 theMcp;
+LiquidCrystal theLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en, 
+                                      constants::lcd_d4, constants::lcd_d5, 
+                                      constants::lcd_d6, constants::lcd_d7);
+relaisInterface theRelais(constants::relay_count, constants::relay_out);
 
-LiquidCrystal myLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en, constants::lcd_d4, constants::lcd_d5, constants::lcd_d6, constants::lcd_d7);
-LiquidCrystal* screen::myLcd = myLcd;
-testObj myTest;
-namespace myScreens {
-    mainScreen myMainScreen;
-    selectionScreen mySelectionScreens[12] = {
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeSelection]), 
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::matrixSelection]), 
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::clockSelection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::dateSelection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::contrastSelection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeManSelection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeBw1Selection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeBw2Selection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeZ1Selection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeZ2Selection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeT1Selection]),
-        selectionScreen(constants::lcdContent::str[constants::lcdContent::timeT2Selection])
-        };
-    durationScreen myDurationScreens[5] = {
-        durationScreen(constants::lcdContent::str[constants::lcdContent::durationsMax], &myTest ),
-        durationScreen(constants::lcdContent::str[constants::lcdContent::durationsBw1], &myTest ),
-        durationScreen(constants::lcdContent::str[constants::lcdContent::durationsBw2], &myTest ),
-        durationScreen(constants::lcdContent::str[constants::lcdContent::durationTs1], &myTest ),
-        durationScreen(constants::lcdContent::str[constants::lcdContent::durationTs2], &myTest )
-    };
-
-    timeScreen myTimeScreens[9] = {
-        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw1StrTime], &myTest),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw1EndTime], &myTest),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw2StrTime], &myTest ),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::Bw2EndTime], &myTest ),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::z1StrTime], &myTest ),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::z1EndTime], &myTest ),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::z2StrTime], &myTest ),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::z2EndTime], &myTest ),
-        timeScreen(constants::lcdContent::str[constants::lcdContent::timeAdjust], &myTest )
-    };
-
-    stateScreen myStateScreens[2] =  {
-        stateScreen(constants::lcdContent::str[constants::lcdContent::z1State], &myTest ),
-        stateScreen(constants::lcdContent::str[constants::lcdContent::z2State], &myTest )
-    };
-
-    multiStateScreen myMultiStateScreens[14] = {
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1WkDays] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2WkDays] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw1Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw2Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts1Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts2Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw1Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::bw2Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts1Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::ts2Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z1Matrix] , &myTest ),
-        multiStateScreen(constants::lcdContent::str[constants::lcdContent::z2Matrix] , &myTest )        
-    };
-
-    dateScreen myDateScreen = dateScreen(constants::lcdContent::str[constants::lcdContent::dateAdjust], &myTest );
-    barScreen myContrastScreen = barScreen(constants::lcdContent::str[constants::lcdContent::contrastAdjust], &myTest );    
-
-    //Linking the Screens:
-}
-
-void setLinks(void) {
-  using namespace myScreens;
-  myMainScreen.setLinks(nullptr, nullptr,nullptr, &mySelectionScreens[0]);
-  //Main selectionMenu
-  mySelectionScreens[0].setLinks(&myMainScreen, &mySelectionScreens[4], &mySelectionScreens[1], &mySelectionScreens[5]);
-  mySelectionScreens[1].setLinks(&myMainScreen, &mySelectionScreens[0], &mySelectionScreens[2], &myMultiStateScreens[2]);
-  mySelectionScreens[2].setLinks(&myMainScreen, &mySelectionScreens[1], &mySelectionScreens[3], &myTimeScreens[8]);
-  mySelectionScreens[3].setLinks(&myMainScreen, &mySelectionScreens[2], &mySelectionScreens[4], &myDateScreen);
-  mySelectionScreens[4].setLinks(&myMainScreen, &mySelectionScreens[3], &mySelectionScreens[0], &myContrastScreen);
-  //Duration subSelectionMenu
-  mySelectionScreens[5].setLinks(&mySelectionScreens[0], &mySelectionScreens[9], &mySelectionScreens[6], &myDurationScreens[0]);
-  mySelectionScreens[6].setLinks(&mySelectionScreens[0], &mySelectionScreens[5], &mySelectionScreens[7], &myTimeScreens[0]);
-  mySelectionScreens[7].setLinks(&mySelectionScreens[0], &mySelectionScreens[6], &mySelectionScreens[8], &myTimeScreens[2]);
-  mySelectionScreens[8].setLinks(&mySelectionScreens[0], &mySelectionScreens[7], &mySelectionScreens[9], &myStateScreens[0]);
-  mySelectionScreens[9].setLinks(&mySelectionScreens[0], &mySelectionScreens[8], &mySelectionScreens[5], &myStateScreens[1]);
-  //Man Durations
-  myDurationScreens[0].setLinks(&mySelectionScreens[5],&myDurationScreens[4],&myDurationScreens[3], nullptr);
-  myDurationScreens[3].setLinks(&mySelectionScreens[5],&myDurationScreens[0],&myDurationScreens[4], nullptr);
-  myDurationScreens[4].setLinks(&mySelectionScreens[5],&myDurationScreens[3],&myDurationScreens[0], nullptr);
-  //Bw1
-
-  //Bw2
-
-  //Z1
-
-  //Z2
-
-  //Ts1
-
-  //Ts2
-
-}
-
-menue myMenue = menue(&myScreens::myMainScreen);
+// setup input ring buffer
+enum class inputSignal:uint8_t {nop, 
+                                timerA, timerB, 
+                                sensorA, sensorB, 
+                                switchA, switchB, switchC, switchD, 
+                                doorSwitch, 
+                                keyA, keyB, keyC, keyD, keyE};
+inputSignal theSignalBuffer[constants::signalBufferSize] = {inputSignal::nop};
+uint8_t theRecordIndex = 0, theReadIndex = 0;
 
 void setup() {
+  parameterSet mySet;
+  getConfigTblPage(configTablePageCount-1, mySet);
+  if (mySet.daysOfWeek && 0x80) resetConfigData();
+  /*
   // put your setup code here, to run once:
   Serial.begin(9600);
 
@@ -169,7 +80,8 @@ void setup() {
       Serial.println("Error, alarm wasn't set!");
   }else {
       Serial.println("Alarm will happen in 10 seconds!");  
-  }  
+  } 
+  */ 
 }
 
 void loop() {
