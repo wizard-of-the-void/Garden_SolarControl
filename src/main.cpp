@@ -18,12 +18,12 @@ LiquidCrystal theLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en,
 relaisInterface theRelais(constants::relay_count, constants::relay_out);
 
 // setup input ring buffer
-enum class inputSignal:uint8_t {nop, 
-                                timerA, timerB, 
-                                sensorA, sensorB, 
-                                switchA, switchB, switchC, switchD, 
-                                doorSwitch, 
-                                keyA, keyB, keyC, keyD, keyE};
+enum class inputSignal:uint8_t {nop=255, 
+                                timerA=0, timerB=1, 
+                                sensorA=2, sensorB=3, 
+                                switchA=4, switchB=5, switchC=6, switchD=7, 
+                                doorSwitch=250, alert=251, 
+                                keyA=128, keyB=129, keyC=130, keyD=131, keyE=132};
 inputSignal theSignalBuffer[constants::signalBufferSize] = {inputSignal::nop};
 uint8_t theRecordIndex = 0, theReadIndex = 0;
 
@@ -85,45 +85,47 @@ void setup() {
 }
 
 void loop() {
- /* switch (signal) {
-    case PIR01: 
-    case PIR02: 
-    case KEY01: 
-    case KEY02: 
-      routeSignal(signal);
-      break;
-    case C_BTN: 
-      //displayOn();
-      break;
-    case BTN01:
-      if (menu) {
-
-      } else {
-        relais.directToggle(0);
-      }
-      break;
-    case BTN02:
-      if (menu) {
-
-      } else {
-        relais.directToggle(1);
-      }
-      break;    
-    case BTN03:
-      if (menu) {
-
-      } else {
-        relais.directToggle(2);
-      }
-      break;    
-    case BTN04:
-      if (menu) {
-
-      } else {
-        relais.directToggle(3);
-      }
-      break;    
-    case BTN05: 
-      break;         
-  } */
+  if (theRecordIndex != theReadIndex) {
+    inputSignal mySignal;
+    theReadIndex++;
+    if (theReadIndex >= constants::signalBufferSize) {
+      theReadIndex = theReadIndex % constants::signalBufferSize;
+    }
+    mySignal = theSignalBuffer[theReadIndex];
+    theSignalBuffer[theReadIndex] = inputSignal::nop;
+  
+    switch (mySignal) {
+      case inputSignal::timerA: 
+      case inputSignal::timerB:
+      case inputSignal::sensorA:
+      case inputSignal::sensorB: 
+      case inputSignal::switchA: 
+      case inputSignal::switchB: 
+      case inputSignal::switchC:
+      case inputSignal::switchD:
+        parameterSet mySet;
+        getConfigTblPage(uint8_t(mySignal), mySet);
+        //theRelais.processParameterSet(mySet);
+        //theMenue.update();
+        break;
+      case inputSignal::keyA: 
+      case inputSignal::keyB: 
+      case inputSignal::keyC: 
+      case inputSignal::keyD: 
+      case inputSignal::keyE:
+        //theMenu.processSignal(mySignal);
+        break;
+      case inputSignal::doorSwitch: 
+        //displayOn();
+        //theMenue.update();
+        break;
+      case inputSignal::alert:
+        //theRelais.processAlert();
+        //theMenue.update();
+      case inputSignal::nop:
+        break;
+    }
+  } else {
+    //go to sleep after 3 waits.
+  }
 }
