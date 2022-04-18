@@ -69,13 +69,16 @@ class screen {
 
 class menue{
     private:
-       LiquidCrystal myLcd;
-       screen* myActiveScreen;
+        LiquidCrystal myLcd;
+        screen* myActiveScreen;
+        void displayOn(void);
+        void displayOff(void);        
+
     public:
         menue(screen* aInitScreen);
-        void displayOn(void);
-        void displayOff(void);
-        void reactToSignal(uint8_t aSignal);
+        void processSignal(inputSignal &aSignal);
+        void changeState(bool &aMenueState);
+        void update(void);
 };
 
 class mainScreen : public screen {

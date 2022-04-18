@@ -18,7 +18,7 @@ void menue::displayOff(void) {
   myLcd.noDisplay();
 }
 
-void menue::reactToSignal(uint8_t aSignal) {
+void menue::processSignal(uint8_t aSignal) {
     if (myActiveScreen != nullptr) {
         myActiveScreen = myActiveScreen->receiveSignal(aSignal);
     }

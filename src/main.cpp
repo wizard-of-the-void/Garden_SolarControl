@@ -15,17 +15,15 @@ Adafruit_MCP23X17 theMcp;
 LiquidCrystal theLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en, 
                                       constants::lcd_d4, constants::lcd_d5, 
                                       constants::lcd_d6, constants::lcd_d7);
-relaisInterface theRelais(constants::relay_count, constants::relay_out);
+relaisInterface theRelais(constants::relay_count, constants::relay_out, &theRtc);
 
 // setup input ring buffer
-enum class inputSignal:uint8_t {nop=255, 
-                                timerA=0, timerB=1, 
-                                sensorA=2, sensorB=3, 
-                                switchA=4, switchB=5, switchC=6, switchD=7, 
-                                doorSwitch=250, alert=251, 
-                                keyA=128, keyB=129, keyC=130, keyD=131, keyE=132};
-inputSignal theSignalBuffer[constants::signalBufferSize] = {inputSignal::nop};
+constants::inputSignal theSignalBuffer[constants::signalBufferSize] = {constants::inputSignal::nop};
 uint8_t theRecordIndex = 0, theReadIndex = 0;
+
+// setup the menue
+bool theMenueState = false;
+menue theMenue;
 
 void setup() {
   parameterSet mySet;
@@ -86,43 +84,45 @@ void setup() {
 
 void loop() {
   if (theRecordIndex != theReadIndex) {
-    inputSignal mySignal;
+    constants::inputSignal mySignal;
     theReadIndex++;
-    if (theReadIndex >= constants::signalBufferSize) {
-      theReadIndex = theReadIndex % constants::signalBufferSize;
-    }
+    theReadIndex %= constants::signalBufferSize;
+
     mySignal = theSignalBuffer[theReadIndex];
-    theSignalBuffer[theReadIndex] = inputSignal::nop;
+    theSignalBuffer[theReadIndex] = constants::inputSignal::nop;
   
+    if (mySignal == constants::inputSignal::timerIrq) {
+      
+    }
     switch (mySignal) {
-      case inputSignal::timerA: 
-      case inputSignal::timerB:
-      case inputSignal::sensorA:
-      case inputSignal::sensorB: 
-      case inputSignal::switchA: 
-      case inputSignal::switchB: 
-      case inputSignal::switchC:
-      case inputSignal::switchD:
+      case constants::inputSignal::timerA: 
+      case constants::inputSignal::timerB:
+      case constants::inputSignal::sensorA:
+      case constants::inputSignal::sensorB: 
+      case constants::inputSignal::switchA: 
+      case constants::inputSignal::switchB: 
+      case constants::inputSignal::switchC:
+      case constants::inputSignal::switchD:
         parameterSet mySet;
         getConfigTblPage(uint8_t(mySignal), mySet);
-        //theRelais.processParameterSet(mySet);
-        //theMenue.update();
+        theRelais.processParameterSet(mySet);
+        theMenue.update();
         break;
-      case inputSignal::keyA: 
-      case inputSignal::keyB: 
-      case inputSignal::keyC: 
-      case inputSignal::keyD: 
-      case inputSignal::keyE:
-        //theMenu.processSignal(mySignal);
+      case constants::inputSignal::keyA: 
+      case constants::inputSignal::keyB: 
+      case constants::inputSignal::keyC: 
+      case constants::inputSignal::keyD: 
+      case constants::inputSignal::keyE:
+        theMenue.processSignal(mySignal);
         break;
-      case inputSignal::doorSwitch: 
-        //displayOn();
-        //theMenue.update();
+      case constants::inputSignal::doorSwitch: 
+        theMenue.changeState(theMenueState);
+        theMenue.update();
         break;
-      case inputSignal::alert:
-        //theRelais.processAlert();
-        //theMenue.update();
-      case inputSignal::nop:
+      case constants::inputSignal::alert:
+        theRelais.processAlert();
+        theMenue.update();
+      case constants::inputSignal::nop:
         break;
     }
   } else {

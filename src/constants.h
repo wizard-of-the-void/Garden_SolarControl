@@ -48,6 +48,13 @@ namespace constants {
                             
                             screenCount      = 32;
 
+enum class inputSignal:uint8_t {nop=255, timerIrq=254,
+                                timerA=0, timerB=1, 
+                                sensorA=2, sensorB=3, 
+                                switchA=4, switchB=5, switchC=6, switchD=7, 
+                                doorSwitch=250, alert=251, 
+                                keyA=128, keyB=129, keyC=130, keyD=131, keyE=132};
+
 enum signalSource {PIR01 = 0, PIR02 = 1, KEY01 = 2, KEY02 = 3, C_BTN, BTN01, BTN02, BTN03, BTN04, BTN05};
     namespace lcdContent {
         enum signalSource {
