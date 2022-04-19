@@ -55,7 +55,9 @@ enum class inputSignal:uint8_t {nop=255, timerIrq=254,
                                 doorSwitch=250, alert=251, 
                                 keyA=128, keyB=129, keyC=130, keyD=131, keyE=132};
 
+enum class timerState:uint8_t {timerA_armed, timerB_armed, timer_unarmed};
 enum signalSource {PIR01 = 0, PIR02 = 1, KEY01 = 2, KEY02 = 3, C_BTN, BTN01, BTN02, BTN03, BTN04, BTN05};
+
     namespace lcdContent {
         enum signalSource {
             Empty = 0, 

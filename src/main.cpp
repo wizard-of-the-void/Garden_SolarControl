@@ -20,10 +20,34 @@ relaisInterface theRelais(constants::relay_count, constants::relay_out, &theRtc)
 // setup input ring buffer
 constants::inputSignal theSignalBuffer[constants::signalBufferSize] = {constants::inputSignal::nop};
 uint8_t theRecordIndex = 0, theReadIndex = 0;
+constants::timerState activeTimer = constants::timerState::timer_unarmed;
 
 // setup the menue
 bool theMenueState = false;
 menue theMenue;
+
+void updateTimerAlert(void) {
+  parameterSet timerLst[2];
+  getConfigTblPage(uint8_t (constants::inputSignal::timerA),timerLst[0]);
+  getConfigTblPage(uint8_t (constants::inputSignal::timerB),timerLst[1]);
+
+  DateTime myNow = theRtc.now();
+  DateTime myNextAlert = myNow + TimeSpan(1,0,0,0);
+  uint8_t myOffset = (myNow.dayOfTheWeek() + 6) % 7;
+  activeTimer = constants::timerState::timer_unarmed;
+  for (uint8_t i = 0; i < 2; i++) {
+    if (timerLst[i].state) {
+      for (uint8_t j = 0; j < 7; j++) {
+        if (timerLst[i].daysOfWeek & (0b00000001 << ((myOffset + j)%7))) {
+          if(myNextAlert > (DateTime(myNow.year(), myNow.month(),myNow.day(), timerLst[i].start.hour, timerLst[i].start.minute,0) + TimeSpan(j,0,0,0))) {
+            myNextAlert = DateTime(myNow.year(), myNow.month(),myNow.day(), timerLst[i].start.hour, timerLst[i].start.minute,0) + TimeSpan(j,0,0,0);
+          }
+          break;
+        }
+      }
+    }
+  }
+}
 
 void setup() {
   parameterSet mySet;
@@ -92,7 +116,15 @@ void loop() {
     theSignalBuffer[theReadIndex] = constants::inputSignal::nop;
   
     if (mySignal == constants::inputSignal::timerIrq) {
-      
+      switch (activeTimer) {
+        case constants::timerState::timerA_armed:
+          mySignal = constants::inputSignal::timerA;
+        case constants::timerState::timerB_armed:
+          mySignal = constants::inputSignal::timerB;
+        default:
+          mySignal = constants::inputSignal::nop;
+      }
+      updateTimerAlert();
     }
     switch (mySignal) {
       case constants::inputSignal::timerA: 
