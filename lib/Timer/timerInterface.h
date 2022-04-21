@@ -2,37 +2,22 @@
 #define _TIMER_INTERFACE_H_
 
 #include <RTClib.h>
-#include <fifo.h>
-#include <relais.h>
-#include <router.h>
 #include "constants.h"
 
 class timerInterface {
     private:
-        RTC_DS3231 myRtc;
+        RTC_DS3231 *myRtc;
         
-        DateTime myDelays[4], myIntervals[7][2];
-        uint8_t currentDelay, currentInterval[2];
+        DateTime myStartTimes[constants::timerCount];
+        uint8_t activeTimer;
         
-        relaisInterface* theRelaisInterface;
-        signalRouter* theSignalRouter;
-
-        uint8_t findNextDelay();
-        uint8_t* findNextInterval();
+        void updateStartTime(uint8_t aTimerIdx);
 
     public:
-        timerInterface(signalRouter* aSignalRouter);
+        timerInterface(RTC_DS3231 *aRtc);
 
-        bool setDelay(uint8_t aOutput);
-        uint8_t getDelay(uint8_t aOutput);
-
-        bool setIntervalStart(DateTime& aStart);
-        DateTime getIntervalStart(DateTime& aStart);
-        bool setIntervalEnd(DateTime& aEnd);
-        DateTime getIntervalEnd(DateTime& aEnd);
-
-        void processInterrupt(void);
-        void programTimer(void);
+        void updateRtcAlert(void);
+        constants::inputSignal processInterrupt(void);
 };
 
 #endif

@@ -44,7 +44,11 @@ namespace constants {
                             irq_A           = 3,
                             irq_B           = 2,
                             
-                            signalBufferSize = 32,
+                            timerCount = 2,
+                            timerPageOffset = 0,
+
+                            mainRingBufferSize  = 32,
+                            isrRingBufferSize   = 16,
                             
                             screenCount      = 32;
 
@@ -56,7 +60,6 @@ enum class inputSignal:uint8_t {nop=255, timerIrq=254,
                                 keyA=128, keyB=129, keyC=130, keyD=131, keyE=132};
 
 enum class timerState:uint8_t {timerA_armed, timerB_armed, timer_unarmed};
-enum signalSource {PIR01 = 0, PIR02 = 1, KEY01 = 2, KEY02 = 3, C_BTN, BTN01, BTN02, BTN03, BTN04, BTN05};
 
     namespace lcdContent {
         enum signalSource {
@@ -177,14 +180,4 @@ const char PROGMEM  str_01[] = { "                " }, //=> MainScreen
                                         str_02_01, str_02_02, str_02_03, str_02_04, str_02_05, str_02_06, str_02_07 };
     }
 }
-/*
-uint8_t     //  Online Configuration
-            //------------------------
-            //  Shut off delay
-                pir_delay[2]    = {0, 0},
-                switch_delay[2] = {0, 0},
-            //------------------------
-            // IO-Matrix
-                ioMarix[2];
-*/
 #endif

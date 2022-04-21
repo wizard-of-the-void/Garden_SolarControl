@@ -4,23 +4,21 @@
 #include <Adafruit_MCP23X17.h>
 
 #include "constants.h"
+#include "ringbuffers.h"
+#include "timerInterface.h"
 #include "isr.h"
 #include "relais.h"
 #include "menue.h"
 #include "storage.h"
 
 // setup external components
-RTC_DS3231 theRtc;
-Adafruit_MCP23X17 theMcp;
+RTC_DS3231 theRtc = RTC_DS3231();
+Adafruit_MCP23X17 theMcp = Adafruit_MCP23X17();
 LiquidCrystal theLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en, 
                                       constants::lcd_d4, constants::lcd_d5, 
                                       constants::lcd_d6, constants::lcd_d7);
-relaisInterface theRelais(constants::relay_count, constants::relay_out, &theRtc);
-
-// setup input ring buffer
-constants::inputSignal theSignalBuffer[constants::signalBufferSize] = {constants::inputSignal::nop};
-uint8_t theRecordIndex = 0, theReadIndex = 0;
-constants::timerState activeTimer = constants::timerState::timer_unarmed;
+relaisInterface theRelais = relaisInterface(constants::relay_count, constants::relay_out, &theRtc);
+timerInterface theTimerInterface = timerInterface(&theRtc);
 
 // setup the menue
 bool theMenueState = false;
@@ -107,13 +105,11 @@ void setup() {
 }
 
 void loop() {
-  if (theRecordIndex != theReadIndex) {
+  transfereIsrToMainRing();
+  if (mainRing::level > 0) {
     constants::inputSignal mySignal;
-    theReadIndex++;
-    theReadIndex %= constants::signalBufferSize;
 
-    mySignal = theSignalBuffer[theReadIndex];
-    theSignalBuffer[theReadIndex] = constants::inputSignal::nop;
+    mySignal = mainRing::read();
   
     if (mySignal == constants::inputSignal::timerIrq) {
       switch (activeTimer) {
