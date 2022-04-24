@@ -9,7 +9,6 @@ class timerInterface {
         RTC_DS3231 *myRtc;
         
         DateTime myStartTimes[constants::timerCount];
-        uint8_t activeTimer;
         
         void updateStartTime(uint8_t aTimerIdx);
 
@@ -17,7 +16,7 @@ class timerInterface {
         timerInterface(RTC_DS3231 *aRtc);
 
         void updateRtcAlert(void);
-        constants::inputSignal processInterrupt(void);
+        void processInterrupt(void);
 };
 
 #endif

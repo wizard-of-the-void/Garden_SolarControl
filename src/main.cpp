@@ -8,44 +8,21 @@
 #include "timerInterface.h"
 #include "isr.h"
 #include "relais.h"
-#include "menue.h"
+//#include "menue.h"
 #include "storage.h"
 
 // setup external components
 RTC_DS3231 theRtc = RTC_DS3231();
 Adafruit_MCP23X17 theMcp = Adafruit_MCP23X17();
-LiquidCrystal theLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en, 
+/*LiquidCrystal theLcd = LiquidCrystal(constants::lcd_rs, constants::lcd_en, 
                                       constants::lcd_d4, constants::lcd_d5, 
-                                      constants::lcd_d6, constants::lcd_d7);
+                                      constants::lcd_d6, constants::lcd_d7); */
 relaisInterface theRelais = relaisInterface(constants::relay_count, constants::relay_out, &theRtc);
 timerInterface theTimerInterface = timerInterface(&theRtc);
 
 // setup the menue
 bool theMenueState = false;
-menue theMenue;
-
-void updateTimerAlert(void) {
-  parameterSet timerLst[2];
-  getConfigTblPage(uint8_t (constants::inputSignal::timerA),timerLst[0]);
-  getConfigTblPage(uint8_t (constants::inputSignal::timerB),timerLst[1]);
-
-  DateTime myNow = theRtc.now();
-  DateTime myNextAlert = myNow + TimeSpan(1,0,0,0);
-  uint8_t myOffset = (myNow.dayOfTheWeek() + 6) % 7;
-  activeTimer = constants::timerState::timer_unarmed;
-  for (uint8_t i = 0; i < 2; i++) {
-    if (timerLst[i].state) {
-      for (uint8_t j = 0; j < 7; j++) {
-        if (timerLst[i].daysOfWeek & (0b00000001 << ((myOffset + j)%7))) {
-          if(myNextAlert > (DateTime(myNow.year(), myNow.month(),myNow.day(), timerLst[i].start.hour, timerLst[i].start.minute,0) + TimeSpan(j,0,0,0))) {
-            myNextAlert = DateTime(myNow.year(), myNow.month(),myNow.day(), timerLst[i].start.hour, timerLst[i].start.minute,0) + TimeSpan(j,0,0,0);
-          }
-          break;
-        }
-      }
-    }
-  }
-}
+//menue theMenue;
 
 void setup() {
   parameterSet mySet;
@@ -105,23 +82,11 @@ void setup() {
 }
 
 void loop() {
-  transfereIsrToMainRing();
+  transfereIsrToMainRing(&theTimerInterface);
   if (mainRing::level > 0) {
     constants::inputSignal mySignal;
-
     mySignal = mainRing::read();
-  
-    if (mySignal == constants::inputSignal::timerIrq) {
-      switch (activeTimer) {
-        case constants::timerState::timerA_armed:
-          mySignal = constants::inputSignal::timerA;
-        case constants::timerState::timerB_armed:
-          mySignal = constants::inputSignal::timerB;
-        default:
-          mySignal = constants::inputSignal::nop;
-      }
-      updateTimerAlert();
-    }
+
     switch (mySignal) {
       case constants::inputSignal::timerA: 
       case constants::inputSignal::timerB:
@@ -134,23 +99,24 @@ void loop() {
         parameterSet mySet;
         getConfigTblPage(uint8_t(mySignal), mySet);
         theRelais.processParameterSet(mySet);
-        theMenue.update();
+        //theMenue.update();
         break;
       case constants::inputSignal::keyA: 
       case constants::inputSignal::keyB: 
       case constants::inputSignal::keyC: 
       case constants::inputSignal::keyD: 
       case constants::inputSignal::keyE:
-        theMenue.processSignal(mySignal);
+        //theMenue.processSignal(mySignal);
         break;
       case constants::inputSignal::doorSwitch: 
-        theMenue.changeState(theMenueState);
-        theMenue.update();
+        //theMenue.changeState(theMenueState);
+        //theMenue.update();
         break;
       case constants::inputSignal::alert:
         theRelais.processAlert();
-        theMenue.update();
+        //theMenue.update();
       case constants::inputSignal::nop:
+      default:
         break;
     }
   } else {

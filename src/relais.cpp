@@ -99,11 +99,13 @@ bool relaisInterface::processParameterSet(parameterSet aSet) {
 }
 
 bool relaisInterface::processAlert(void) {
+    return false;
     DateTime myNow = myRtc->now();
     for (uint8_t i = 0; i < myCount; i++) {
         if (getState(i)) {
             if (myNow >= myTimeStamps[i]) {
                 setState(i, false);
+                return true;
             }
         }
     }

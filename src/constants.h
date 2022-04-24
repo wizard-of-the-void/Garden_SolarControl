@@ -118,6 +118,7 @@ enum class timerState:uint8_t {timerA_armed, timerB_armed, timer_unarmed};
             timeT1Selection  = 42,
             timeT2Selection  = 43 };
 //       0123456789ABCDEF 
+/*
 const char PROGMEM  str_01[] = { "                " }, //=> MainScreen
                     str_02[] = { "Zschltg aendern?" }, //=> SeclectionScreen 2
                     str_02_01[] = { "Manuel   ändern?" },
@@ -177,7 +178,7 @@ const char PROGMEM  str_01[] = { "                " }, //=> MainScreen
     const char *const str[] PROGMEM = { str_01, str_02, str_03, str_04, str_05, str_06, str_07, str_08, str_09, str_10,
                                         str_21, str_22, str_23, str_24, str_25, str_26, str_27, str_28, str_29, str_30,
                                         str_31, str_32, str_33, str_34, str_35, str_36, str_37, 
-                                        str_02_01, str_02_02, str_02_03, str_02_04, str_02_05, str_02_06, str_02_07 };
+                                        str_02_01, str_02_02, str_02_03, str_02_04, str_02_05, str_02_06, str_02_07 }; */
     }
 }
 #endif
