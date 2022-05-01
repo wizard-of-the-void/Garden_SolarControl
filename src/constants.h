@@ -50,6 +50,8 @@ namespace constants {
                             mainRingBufferSize  = 32,
                             isrRingBufferSize   = 16,
                             
+                            loopLimit = 128,
+
                             screenCount      = 32;
 
 enum class inputSignal:uint8_t {nop=255, timerIrq=254,
@@ -117,68 +119,46 @@ enum class timerState:uint8_t {timerA_armed, timerB_armed, timer_unarmed};
             timeZ2Selection  = 41,
             timeT1Selection  = 42,
             timeT2Selection  = 43 };
-//       0123456789ABCDEF 
-/*
-const char PROGMEM  str_01[] = { "                " }, //=> MainScreen
-                    str_02[] = { "Zschltg aendern?" }, //=> SeclectionScreen 2
-                    str_02_01[] = { "Manuel   ändern?" },
-                    str_02_02[] = { "Melder-1 ändern?" },
-                    str_02_03[] = { "Melder-2 ändern?" },
-                    str_02_04[] = { "Zeit-1   ändern?" },
-                    str_02_05[] = { "Zeit-2   ändern?" },
-                    str_02_06[] = { "Taster-1 ändern?" },
-                    str_02_07[] = { "Taster-2 ändern?" },                                        
-                    str_03[] = { "Matrix  aendern?" }, //=> SeclectionScreen 2
-                    str_04[] = { "Uhrzeit aendern?" }, //=> SeclectionScreen 2
-                    str_05[] = { "Datum   aendern?" }, //=> SeclectionScreen 2
-                    str_06[] = { "Kontrst aendern?" }, //=> SeclectionScreen 2
+//                                0123456789ABCDEF 
+const char PROGMEM
+//                                     0123456789ABCDEF                     
+                    str_name_01[] = { "Zschlt01" },
+                    str_name_02[] = { "Zschlt02" },
+                    str_name_03[] = { "Melder01" },
+                    str_name_04[] = { "Melder02" },
+                    str_name_05[] = { "Taster-1" },
+                    str_name_06[] = { "Taster-2" },
+                    str_name_07[] = { "Taster-3" },
+                    str_name_08[] = { "Taster-4" },
+                    str_name_09[] = { "WechselZ" },
+                    str_name_10[] = { "Kontrast" },                    
+                    str_name_11[] = { "Uhrzeit " },
+                    str_name_12[] = { "Datum   " },
 
-                    str_07[] = { "Man-Ein: ### Min" }, //=> DurationScreen 2
-                    str_08[] = { "Bw1-Ein: ### Min" }, //=> DurationScreen 2
-                    str_09[] = { "Bw2-Ein: ### Min" }, //=> DurationScreen 2
+                    str_short_01[] = { "ZS-1" },
+                    str_short_02[] = { "ZS-2" },
+                    str_short_03[] = { "BM-1" },
+                    str_short_04[] = { "BM-2" },
+                    str_short_05[] = { "TS-1" },
+                    str_short_06[] = { "TS-2" },
+                    str_short_07[] = { "TS-3" },
+                    str_short_08[] = { "TS-4" },
+                    
+                    str_menue_00[] = { " ändern?" },
+                    str_menue_01[] = { "-Status: EIN" }, //=> StateScreen 2
+                    str_menue_02[] = { "-Ein: ###min" }, //=> DurationScreen 2
+                    str_menue_03[] = { "-Str-Z:##:##" }, //=> TimeScreen 2
+                    str_menue_04[] = { "-End-Z:##:##" }, //=> TimeScreen 2
+                    str_menue_05[] = { "-WTg:1234567" }, //=> DayScreen 2
+                    str_menue_06[] = { " => 12345678" }, //=> MatrixScreen 2
+                    str_menue_07[] = { "Zeit:      00:00" }, //=> TimeScreen 2
+                    str_menue_08[] = { "Datum DD.MM.YYYY" }, //=> DateScreen 2                            
+                    str_menue_09[] = { "0------|-------9" }, //=> BarScreen 2
 
-                    str_10[] = { "M-1-Str-Z: ##:##" }, //=> TimeScreen 2
-                    str_11[] = { "M-1-End-Z: ##:##" }, //=> TimeScreen 2
-                            
-                    str_12[] = { "M-2-Str-Z: ##:##" }, //=> TimeScreen 2
-                    str_13[] = { "M-2-End-Z: ##:##" }, //=> TimeScreen 2
-
-                    str_14[] = { "T-1-Ein: ### Min" }, //=> DurationScreen 2
-                    str_15[] = { "T-2-Ein: ### Min" }, //=> DurationScreen 2
-
-                    str_16[] = { "Z1-Status:   EIN" }, //=> StateScreen 2
-                    str_17[] = { "Z1-Str-Z:  ##:##" }, //=> TimeScreen 2
-                    str_18[] = { "Z1-End-Z:  ##:##" }, //=> TimeScreen 2
-                    str_19[] = { "Z1-WTage:1234567" }, //=> DayScreen 2
-                            
-                    str_20[] = { "Z2-Status:   EIN" }, //=> StateScreen 2
-                    str_21[] = { "Z2-Str-Z:  ##:##" }, //=> TimeScreen 2
-                    str_22[] = { "Z2-End-Z:  ##:##" }, //=> TimeScreen 2
-                    str_23[] = { "Z2-WTage:1234567" }, //=> DayScreen 2
-
-                    str_24[] = { "M-1 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_25[] = { "M-2 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_26[] = { "T-1 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_27[] = { "T-2 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_28[] = { "Z-1 => A:1 2 3 4" }, //=> MatrixScreen 2
-                    str_29[] = { "Z-2 => A:1 2 3 4" }, //=> MatrixScreen 2
-
-                    str_30[] = { "Zeit:      00:00" }, //=> TimeScreen 2
-
-                    str_31[] = { "Datum DD.MM.YYYY" }, //=> DateScreen 2
-                            
-                    str_32[] = { "0------|-------9" }, //=> BarScreen 2
-
-                    str_33[] = { "W  Z  #  E, => M" }, //=> SeclectionScreen
-                    str_34[] = { "W  Z  A  E  => M" }, //=> DayScreen
-                    str_35[] = { "W  Z  +  -  => M" }, //=> DurationScreen, TimeScreen, DateScreen
-                    str_36[] = { "#  #  +  -  => M" }, //=> BarScreen, StateScreen            
-                    str_37[] = { "1  2  3  4  => M" }; //=> MatrixScreen
-
-    const char *const str[] PROGMEM = { str_01, str_02, str_03, str_04, str_05, str_06, str_07, str_08, str_09, str_10,
-                                        str_21, str_22, str_23, str_24, str_25, str_26, str_27, str_28, str_29, str_30,
-                                        str_31, str_32, str_33, str_34, str_35, str_36, str_37, 
-                                        str_02_01, str_02_02, str_02_03, str_02_04, str_02_05, str_02_06, str_02_07 }; */
+                    str_label_01[] = { "W  Z  #  E, => M" }, //=> SeclectionScreen
+                    str_label_02[] = { "W  Z  A  E  => M" }, //=> DayScreen
+                    str_label_03[] = { "W  Z  +  -  => M" }, //=> DurationScreen, TimeScreen, DateScreen
+                    str_label_04[] = { "#  #  +  -  => M" }; //=> BarScreen, StateScreen            
     }
 }
 #endif

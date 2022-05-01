@@ -1,5 +1,6 @@
 #include <inttypes.h>
 #include <Arduino.h>
+#include <avr/sleep.h>
 #include <RTClib.h>
 #include <Adafruit_MCP23X17.h>
 
@@ -20,8 +21,9 @@ Adafruit_MCP23X17 theMcp = Adafruit_MCP23X17();
 relaisInterface theRelais = relaisInterface(constants::relay_count, constants::relay_out, &theRtc);
 timerInterface theTimerInterface = timerInterface(&theRtc);
 
+uint8_t loopCount = 0;
+
 // setup the menue
-bool theMenueState = false;
 //menue theMenue;
 
 void setup() {
@@ -99,6 +101,7 @@ void loop() {
         parameterSet mySet;
         getConfigTblPage(uint8_t(mySignal), mySet);
         theRelais.processParameterSet(mySet);
+        loopCount = 0;
         //theMenue.update();
         break;
       case constants::inputSignal::keyA: 
@@ -107,19 +110,30 @@ void loop() {
       case constants::inputSignal::keyD: 
       case constants::inputSignal::keyE:
         //theMenue.processSignal(mySignal);
+        loopCount = 0;
         break;
       case constants::inputSignal::doorSwitch: 
         //theMenue.changeState(theMenueState);
         //theMenue.update();
+        loopCount = 0;
         break;
       case constants::inputSignal::alert:
         theRelais.processAlert();
         //theMenue.update();
+        loopCount = 0;
       case constants::inputSignal::nop:
+        loopCount++;
       default:
         break;
     }
   } else {
-    //go to sleep after 3 waits.
+    //go to sleep after loopLimit nop instructions.
+    if (loopCount >= constants::loopLimit) {
+      set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+      sleep_enable();
+      sleep_mode();
+      sleep_disable();
+      loopCount = 0;
+    }
   }
 }
