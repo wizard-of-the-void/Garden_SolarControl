@@ -9,7 +9,7 @@
 #include "timerInterface.h"
 #include "isr.h"
 #include "relais.h"
-//#include "menue.h"
+#include "menue.h"
 #include "storage.h"
 
 // setup external components
@@ -24,7 +24,7 @@ timerInterface theTimerInterface = timerInterface(&theRtc);
 uint8_t loopCount = 0;
 
 // setup the menue
-//menue theMenue;
+menue theMenue = menue(constants::lcdContent::names, constants::lcdContent::shorts, constants::lcdContent::menue, constants::lcdContent::lables);
 
 void setup() {
   parameterSet mySet;

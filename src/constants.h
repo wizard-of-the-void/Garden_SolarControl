@@ -1,6 +1,7 @@
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
 #include <inttypes.h> 
+#include <avr/pgmspace.h>
 
 namespace constants {
  constexpr uint8_t //Hardware settings
@@ -119,10 +120,8 @@ enum class timerState:uint8_t {timerA_armed, timerB_armed, timer_unarmed};
             timeZ2Selection  = 41,
             timeT1Selection  = 42,
             timeT2Selection  = 43 };
-//                                0123456789ABCDEF 
-const char PROGMEM
-//                                     0123456789ABCDEF                     
-                    str_name_01[] = { "Zschlt01" },
+
+const char str_name_01[] PROGMEM = { "Zschlt01" },
                     str_name_02[] = { "Zschlt02" },
                     str_name_03[] = { "Melder01" },
                     str_name_04[] = { "Melder02" },
@@ -159,6 +158,23 @@ const char PROGMEM
                     str_label_02[] = { "W  Z  A  E  => M" }, //=> DayScreen
                     str_label_03[] = { "W  Z  +  -  => M" }, //=> DurationScreen, TimeScreen, DateScreen
                     str_label_04[] = { "#  #  +  -  => M" }; //=> BarScreen, StateScreen            
+
+    const char *const names[] PROGMEM = { str_name_01, str_name_02, str_name_03,
+                                        str_name_04, str_name_05, str_name_06,
+                                        str_name_07, str_name_08, str_name_09,
+                                        str_name_10, str_name_11, str_name_12 }; 
+
+    const char *const shorts[] PROGMEM = { str_short_01, str_short_02, str_short_03,
+                                        str_short_04, str_short_05, str_short_06,
+                                        str_short_07, str_short_08 }; 
+
+    const char *const menue[] PROGMEM = { str_menue_01, str_menue_02, str_menue_03,
+                                        str_menue_04, str_menue_05, str_menue_06,
+                                        str_menue_07, str_menue_08, str_menue_09 }; 
+
+    const char *const lables[] PROGMEM = { str_label_01, str_label_02, str_label_03,
+                                        str_label_04 };
+
     }
 }
 #endif
