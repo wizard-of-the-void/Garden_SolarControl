@@ -24,7 +24,7 @@ timerInterface theTimerInterface = timerInterface(&theRtc);
 uint8_t loopCount = 0;
 
 // setup the menue
-menue theMenue = menue(constants::lcdContent::names, constants::lcdContent::shorts, constants::lcdContent::menue, constants::lcdContent::lables);
+menue theMenue = menue();
 
 void setup() {
   parameterSet mySet;
