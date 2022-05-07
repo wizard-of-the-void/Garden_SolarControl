@@ -24,7 +24,7 @@ timerInterface theTimerInterface = timerInterface(&theRtc);
 uint8_t loopCount = 0;
 
 // setup the menue
-menue theMenue = menue();
+menue theMenue = menue(&theRelais, &theRtc);
 
 void setup() {
   parameterSet mySet;
