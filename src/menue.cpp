@@ -9,6 +9,12 @@ menue::menue(relaisInterface *aRelaisInterface, RTC_DS3231 *aRTC):myLcd(constant
     myLcd.begin(16, 2);
 }
 
+void menue::makeCombinedLine(char* aTarget, const char* const firstPart, const char* const secondPart) {
+    memset(aTarget, 0, constants::lcd_conf_cols + 1);
+    strcat(aTarget, firstPart);
+    strcat(aTarget, secondPart);
+}
+
 void menue::changeState(bool aMenueState) {
     if (aMenueState) {
         myLcd.clear();
@@ -100,9 +106,7 @@ void menue::itemSelectionMenue(constants::inputSignal aSignal) {
         case constants::inputSignal::keyA:
             myEntryId++;
             myEntryId %= 12;
-            memset(myFirstLine, 0, 17);
-            strcat(myFirstLine, constants::lcdContent::names[myEntryId]);
-            strcat(myFirstLine, constants::lcdContent::menue[0]);
+            makeCombinedLine(myFirstLine,constants::lcdContent::names[myEntryId],constants::lcdContent::menue[0]);
             //myLcd.cursor()
             break; 
         case constants::inputSignal::keyB: 
@@ -111,9 +115,7 @@ void menue::itemSelectionMenue(constants::inputSignal aSignal) {
             } else {
                 myEntryId--;
             }
-            memset(myFirstLine, 0, 17);
-            strcat(myFirstLine, constants::lcdContent::names[myEntryId]);
-            strcat(myFirstLine, constants::lcdContent::menue[0]);
+            makeCombinedLine(myFirstLine,constants::lcdContent::names[myEntryId],constants::lcdContent::menue[0]);
             break;
         case constants::inputSignal::keyC: 
             // not used in this menue

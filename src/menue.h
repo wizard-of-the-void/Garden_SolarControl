@@ -17,6 +17,8 @@ class menue {
     relaisInterface *theRelaisInterface;
     RTC_DS3231 *theRTC;
 
+    void makeCombinedLine(char* aTarget, const char* const firstPart, const char* const secondPart);
+
     void homeScreen(void);
 
     void itemSelectionMenue(constants::inputSignal aSignal);
