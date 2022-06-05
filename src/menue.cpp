@@ -7,6 +7,8 @@ menue::menue(relaisInterface *aRelaisInterface, RTC_DS3231 *aRTC):myLcd(constant
     theRelaisInterface = aRelaisInterface;
     theRTC = aRTC;
     myLcd.begin(16, 2);
+    myState = state::home;
+    myOldState = state::none;
 }
 
 void menue::makeCombinedLine(char* aTarget, const char* const firstPart, const char* const secondPart) {
@@ -23,7 +25,9 @@ void menue::changeState(bool aMenueState) {
         myEntryId = 0;
         myPosSelected = false;
         myEntryDefined = false;
-        homeScreen();
+        myState = state::home;
+        myOldState = state::none;
+        homeScreen(constants::inputSignal::nop);
     } else {
         myLcd.clear();
         myLcd.noDisplay();
@@ -35,68 +39,73 @@ void menue::changeState(bool aMenueState) {
 }
 
 void menue::processSignal(constants::inputSignal aSignal) {
-    if (!myEntryDefined) {
-        itemSelectionMenue(aSignal);
-    } else if (!myPosSelected) {
-        switch (myEntryId) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-                parameterSelectionMenue(aSignal);
-                break;
-            case 8:
-                break;
-            case 9:
-                contrastMenue(aSignal);
-                break;
-            case 10:
-                timeMenue(aSignal);
-                break;
-            case 11:
-                dateMenue(aSignal);
-                break;
-        } 
-    } else {
-        switch (myPos)
-        {
-        case 0:
-            statusMenue(aSignal);
+    switch (myState) {
+        case state::home:
+            homeScreen(aSignal);
             break;
-        case 1:
+        case state::selection:
+            itemSelectionMenue(aSignal);
+            break;
+        case state::subSelection:
+            parameterSelectionMenue(aSignal);
+            break;
+        case state::contrast:
+            contrastMenue(aSignal);
+            break;
+        case state::time:
+            timeMenue(aSignal);
+            break;       
+        case state::date:
+            dateMenue(aSignal);
+            break;             
+        case state::elementStatus:
+            statusMenue(aSignal);
+            break;      
+        case state::elementDuration:
             durationMenue(aSignal);
             break;
-        case 2:
+        case state::elementStart:
             startMenue(aSignal);
-            break;
-        case 3:
+            break;      
+        case state::elementEnd:
             endMenue(aSignal);
-            break;
-        case 4:
+            break;            
+        case state::elementDay:
             dayMenue(aSignal);
-            break;
-        case 5:
+            break;             
+        case state::elementMatrix:
             matrixMenue(aSignal);
-            break;
-        default:
-            homeScreen();
-            break;
-        }
+            break;                                         
     }
 }
 
 
-void menue::update(void) {
-
+void menue::update(const uint8_t &l11, const uint8_t &l12, const uint8_t &l21) {
+    if (myState != myOldState) {
+        char myFirstLine[17] = {""}, mySecondLine[17] = {""};
+        strcat(mySecondLine, constants::lcdContent::lables[0]);
+        makeCombinedLine(myFirstLine,constants::lcdContent::names[myEntryId],constants::lcdContent::menue[0]);
+        myLcd.setCursor(0,0);
+        myLcd.println(myFirstLine);
+        myLcd.println(mySecondLine);
+    }
 }
 
 
-void menue::homeScreen(void) {
-
+void menue::homeScreen(constants::inputSignal aSignal) {
+    update(0,0,0);
+    myOldState = state::home;
+    switch (aSignal) {
+        case constants::inputSignal::keyA:
+        case constants::inputSignal::keyB:
+        case constants::inputSignal::keyC:
+        case constants::inputSignal::keyD:
+        case constants::inputSignal::keyE:
+            myState = state::selection;
+            break;
+        case constants::inputSignal::nop:
+            break;
+    }
 }
 
 void menue::itemSelectionMenue(constants::inputSignal aSignal) {
@@ -133,7 +142,8 @@ void menue::itemSelectionMenue(constants::inputSignal aSignal) {
             }
             break;
         case constants::inputSignal::keyE:
-            homeScreen();
+            myState = state::home;
+            //homeScreen();
             break;
         default:
             break;

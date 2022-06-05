@@ -121,7 +121,7 @@ enum class timerState:uint8_t {timerA_armed, timerB_armed, timer_unarmed};
             timeT1Selection  = 42,
             timeT2Selection  = 43 };
 
-const char str_name_01[] PROGMEM = { "Zschlt01" },
+const char str_name_01[] PROGMEM =  { "Zschlt01" },
                     str_name_02[] = { "Zschlt02" },
                     str_name_03[] = { "Melder01" },
                     str_name_04[] = { "Melder02" },
@@ -154,6 +154,7 @@ const char str_name_01[] PROGMEM = { "Zschlt01" },
                     str_menue_08[] = { "Datum DD.MM.YYYY" }, //=> DateScreen 2                            
                     str_menue_09[] = { "0------|-------9" }, //=> BarScreen 2
 
+                    str_label_00[] = { "[1] [2]  [3] [4]" },
                     str_label_01[] = { "W  Z  #  E, => M" }, //=> SeclectionScreen
                     str_label_02[] = { "W  Z  A  E  => M" }, //=> DayScreen
                     str_label_03[] = { "W  Z  +  -  => M" }, //=> DurationScreen, TimeScreen, DateScreen

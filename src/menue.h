@@ -9,6 +9,9 @@
 
 class menue {
     private:
+
+    enum class state:uint8_t {none, home, selection, subSelection, contrast, time, date, elementStatus, elementDuration, elementStart, elementEnd, elementDay, elementMatrix};
+    state myState, myOldState;
     LiquidCrystal myLcd;
     uint8_t myPos = 0, myEntryId = 0, mySingleValue = 0;
     bool myEntryDefined = false, myPosSelected = false;
@@ -18,8 +21,9 @@ class menue {
     RTC_DS3231 *theRTC;
 
     void makeCombinedLine(char* aTarget, const char* const firstPart, const char* const secondPart);
+    void update(const uint8_t &l11, const uint8_t &l12, const uint8_t &l21);
 
-    void homeScreen(void);
+    void homeScreen(constants::inputSignal aSignal);
 
     void itemSelectionMenue(constants::inputSignal aSignal);
     void parameterSelectionMenue(constants::inputSignal aSignal);
@@ -39,7 +43,6 @@ class menue {
 
     void changeState(bool aMenueState);
     void processSignal(constants::inputSignal aSignal);
-    void update(void);
 };
 
 #endif
