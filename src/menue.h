@@ -20,9 +20,13 @@ class menue {
     relaisInterface *theRelaisInterface;
     RTC_DS3231 *theRTC;
 
+    // BASIC DISPLAY FUNCTIONS
     void makeCombinedLine(char* aTarget, const char* const firstPart, const char* const secondPart);
     void update(const uint8_t &l11, const uint8_t &l12, const uint8_t &l21);
+    void makeFirstLine(const uint8_t &aElementIndex_A, const uint8_t &aElementIndex_B);
+    void makeSecondLine(const uint8_t &aElementIndex);
 
+    // SCREENS
     void homeScreen(constants::inputSignal aSignal);
 
     void itemSelectionMenue(constants::inputSignal aSignal);
@@ -41,6 +45,7 @@ class menue {
     public:
     menue(relaisInterface *aRelaisInterface, RTC_DS3231 *aRTC);
 
+    // INTERFACE
     void changeState(bool aMenueState);
     void processSignal(constants::inputSignal aSignal);
 };

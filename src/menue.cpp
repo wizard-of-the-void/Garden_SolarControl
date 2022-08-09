@@ -91,6 +91,14 @@ void menue::update(const uint8_t &l11, const uint8_t &l12, const uint8_t &l21) {
     }
 }
 
+void menue::makeFirstLine(const uint8_t &aElementIndex_A, const uint8_t &aElementIndex_B) {
+
+}
+
+void menue::makeSecondLine(const uint8_t &aElementIndex) {
+
+}
+
 
 void menue::homeScreen(constants::inputSignal aSignal) {
     update(0,0,0);
