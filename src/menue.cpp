@@ -11,10 +11,16 @@ menue::menue(relaisInterface *aRelaisInterface, RTC_DS3231 *aRTC):myLcd(constant
     myOldState = state::none;
 }
 
-void menue::makeCombinedLine(char* aTarget, const char* const firstPart, const char* const secondPart) {
-    memset(aTarget, 0, constants::lcd_conf_cols + 1);
-    strcat(aTarget, firstPart);
-    strcat(aTarget, secondPart);
+void menue::clearLineBuffer() {
+    memset(myLines, 0, sizeof(myLines[0][0]) * (constants::lcd_conf_rows) * (constants::lcd_conf_cols + 1));
+}
+
+void menue::makeFirstLine(state aState) {
+
+}
+
+void menue::makeSecondLine(state aState) {
+    snprintf(myLines[1], constants::lcd_conf_cols + 1, constants::lcdContent::lables[static_cast<uint8_t>(aState)]);
 }
 
 void menue::changeState(bool aMenueState) {
@@ -77,32 +83,27 @@ void menue::processSignal(constants::inputSignal aSignal) {
             matrixMenue(aSignal);
             break;                                         
     }
-}
 
-
-void menue::update(const uint8_t &l11, const uint8_t &l12, const uint8_t &l21) {
-    if (myState != myOldState) {
-        char myFirstLine[17] = {""}, mySecondLine[17] = {""};
-        strcat(mySecondLine, constants::lcdContent::lables[0]);
-        makeCombinedLine(myFirstLine,constants::lcdContent::names[myEntryId],constants::lcdContent::menue[0]);
-        myLcd.setCursor(0,0);
-        myLcd.println(myFirstLine);
-        myLcd.println(mySecondLine);
+    //Update first lines content
+    myLcd.setCursor(0,0);
+    myLcd.println(myLines[0]);
+    
+    //If screen changed update second lines content
+    if (myOldState != myState){
+        makeSecondLine(myState);
+        myLcd.println(myLines[1]);
+        myOldState = myState;
     }
 }
 
-void menue::makeFirstLine(const uint8_t &aElementIndex_A, const uint8_t &aElementIndex_B) {
-
-}
-
-void menue::makeSecondLine(const uint8_t &aElementIndex) {
-
-}
-
-
 void menue::homeScreen(constants::inputSignal aSignal) {
-    update(0,0,0);
-    myOldState = state::home;
+    DateTime myTimteStamp = theRTC->now();
+    snprintf(myLines[0], constants::lcd_conf_cols+1, constants::lcdContent::menue[0], 
+        myTimteStamp.day(), myTimteStamp.month(), myTimteStamp.year(), 
+        myTimteStamp.hour(), myTimteStamp.minute());
+    if (myOldState != state::home){
+        snprintf(myLines[1], constants::lcd_conf_cols+1, constants::lcdContent::lables[0]);
+    }
     switch (aSignal) {
         case constants::inputSignal::keyA:
         case constants::inputSignal::keyB:
@@ -117,14 +118,14 @@ void menue::homeScreen(constants::inputSignal aSignal) {
 }
 
 void menue::itemSelectionMenue(constants::inputSignal aSignal) {
-    char myFirstLine[17] = {""}, mySecondLine[17] = {""};
-    strcat(mySecondLine, constants::lcdContent::lables[0]);
     switch(aSignal){
         case constants::inputSignal::keyA:
             myEntryId++;
             myEntryId %= 12;
-            makeCombinedLine(myFirstLine,constants::lcdContent::names[myEntryId],constants::lcdContent::menue[0]);
-            //myLcd.cursor()
+            snprintf(myLines[0], 
+                    constants::lcd_conf_cols+1, 
+                    constants::lcdContent::menue[1], 
+                    constants::lcdContent::names[myEntryId]);
             break; 
         case constants::inputSignal::keyB: 
             if (myEntryId == 0){
@@ -132,7 +133,10 @@ void menue::itemSelectionMenue(constants::inputSignal aSignal) {
             } else {
                 myEntryId--;
             }
-            makeCombinedLine(myFirstLine,constants::lcdContent::names[myEntryId],constants::lcdContent::menue[0]);
+            snprintf(myLines[0], 
+                    constants::lcd_conf_cols+1, 
+                    constants::lcdContent::menue[1], 
+                    constants::lcdContent::names[myEntryId]);
             break;
         case constants::inputSignal::keyC: 
             // not used in this menue
@@ -195,5 +199,9 @@ void menue::dateMenue(constants::inputSignal aSignal) {
 }
 
 void menue::contrastMenue(constants::inputSignal aSignal) {
+    
+}
+
+void menue::setContrast(uint8_t aContrast) {
 
 }

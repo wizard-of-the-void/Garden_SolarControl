@@ -143,16 +143,25 @@ const char str_name_01[] PROGMEM =  { "Zschlt01" },
                     str_short_07[] = { "TS-3" },
                     str_short_08[] = { "TS-4" },
                     
-                    str_menue_00[] = { " ändern?" },
-                    str_menue_01[] = { "-Status: EIN" }, //=> StateScreen 2
+                    str_menue_00[] = { " wählen" },
+                    str_menue_01[] = { "-Status: ///" }, //=> StateScreen 2
                     str_menue_02[] = { "-Ein: ###min" }, //=> DurationScreen 2
                     str_menue_03[] = { "-Str-Z:##:##" }, //=> TimeScreen 2
                     str_menue_04[] = { "-End-Z:##:##" }, //=> TimeScreen 2
                     str_menue_05[] = { "-WTg:1234567" }, //=> DayScreen 2
                     str_menue_06[] = { " => 12345678" }, //=> MatrixScreen 2
-                    str_menue_07[] = { "Zeit:      00:00" }, //=> TimeScreen 2
+                    str_menue_07[] = { "Zeit:   ##:##:##" }, //=> TimeScreen 2
                     str_menue_08[] = { "Datum DD.MM.YYYY" }, //=> DateScreen 2                            
-                    str_menue_09[] = { "0------|-------9" }, //=> BarScreen 2
+                    str_menue_09[] = { "0-------------10" }, //=> BarScreen 2
+                    str_menue_10[] = { "##.##.## / ##:##" }, //=> HomeScreen
+                    str_menue_11[] = { "-Status     " },
+                    str_menue_12[] = { "-Schaltdauer" },
+                    str_menue_13[] = { "-Startzeit  " },
+                    str_menue_14[] = { "-Endzeit    " },
+                    str_menue_15[] = { "-Wochentage " },
+                    str_menue_16[] = { "-Beziehungen" },
+                    str_menue_17[] = { "%s%s"         },
+
 
                     str_label_00[] = { "[1] [2]  [3] [4]" },
                     str_label_01[] = { "W  Z  #  E, => M" }, //=> SeclectionScreen
@@ -169,12 +178,15 @@ const char str_name_01[] PROGMEM =  { "Zschlt01" },
                                         str_short_04, str_short_05, str_short_06,
                                         str_short_07, str_short_08 }; 
 
-    const char *const menue[] PROGMEM = { str_menue_01, str_menue_02, str_menue_03,
-                                        str_menue_04, str_menue_05, str_menue_06,
-                                        str_menue_07, str_menue_08, str_menue_09 }; 
+    const char *const menue[] PROGMEM = { str_menue_10, str_menue_00, str_menue_17, str_menue_01, 
+                                        str_menue_02, str_menue_03, str_menue_04, 
+                                        str_menue_05, str_menue_06, str_menue_07, 
+                                        str_menue_08, str_menue_09 };
 
-    const char *const lables[] PROGMEM = { str_label_01, str_label_02, str_label_03,
-                                        str_label_04 };
+    const char *const subMenue[] PROGMEM = { str_menue_11, str_menue_12, str_menue_13, str_menue_14, str_menue_15, str_menue_16 }; 
+
+    const char *const lables[] PROGMEM = { str_label_00, str_label_01, str_label_01, str_label_04, str_label_04, str_label_03, str_label_03, str_label_02, str_label_02, str_label_04, str_label_03,
+                                        str_label_03 };
 
     }
 }
